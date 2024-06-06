@@ -59,6 +59,8 @@
  *         description: User successfully registered
  *       '500':
  *         description: internal error
+ *       '400':
+ *        description: Email already used
  */
 
 const express = require("express");

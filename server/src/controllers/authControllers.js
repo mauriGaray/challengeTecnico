@@ -16,10 +16,16 @@ const registerController = async (req, res) => {
   const hashPassword = await bcrypt.hash(password, 10);
 
   try {
-    await doRegister(firstName, lastName, email, hashPassword, res);
+    let registerResult = await doRegister(
+      firstName,
+      lastName,
+      email,
+      hashPassword,
+      res
+    );
   } catch (error) {
-    console.error("An error occurred:", error);
     res.status(500).json({ status: "code 500", message: error.message });
+    console.error("An error occurred:", error);
   }
 };
 

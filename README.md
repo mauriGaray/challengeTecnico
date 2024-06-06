@@ -51,3 +51,8 @@ Start the server
 
 La documentación hecha con Swagger UI se encuentra en el endpoint /api-docs.
 
+Se  puede ingresar directamnete al login con 
+
+**Email:** mockemail@gmail.com
+
+**Password:** 123456

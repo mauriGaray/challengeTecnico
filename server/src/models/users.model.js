@@ -44,20 +44,37 @@ const doLogin = async (email, password, res) => {
 };
 
 const doRegister = async (firstName, lastName, email, hashPassword, res) => {
-  const query =
-    "INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)";
-  pool.query(
-    query,
-    [firstName, lastName, email, hashPassword],
-    (error, results, fields) => {
-      if (error) {
-        console.error("Error inserting into database:", error);
-        res.status(500).send("Internal server error");
-        return;
-      }
-      res.status(200).send("User created");
+  // Verificar si el email esta duplicado
+  const checkQuery = "SELECT COUNT(*) AS count FROM users WHERE email = ?";
+  pool.query(checkQuery, [email], (checkError, checkResults) => {
+    if (checkError) {
+      res.status(500).json({ status: "code 500", message: checkError.message });
+      console.error("Error from database:", checkError);
+
+      return;
     }
-  );
+
+    if (checkResults[0].count > 0) {
+      res.status(400).send("Email already used");
+      return;
+    }
+
+    // crear nuevo usuario
+    const query =
+      "INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)";
+    pool.query(
+      query,
+      [firstName, lastName, email, hashPassword],
+      (insertError, results, fields) => {
+        if (insertError) {
+          console.error("Error inserting into database:", insertError);
+          res.status(500).send("Internal server error");
+          return;
+        }
+        res.status(200).send("User created");
+      }
+    );
+  });
 };
 
 module.exports = { doLogin, doRegister };
